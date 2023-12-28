@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Search</title>
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Tag Search</h1>
+<input type="text" id="searchInput" placeholder="Search for a tag">
+<button onclick="search()">Search</button>
+
+<div id="result">
+    <!-- Search results will be displayed here -->
+</div>
+
+<script>
+    // Sample data - replace this with actual data from your backend
+    const tagsData = {
+        "Science": ["Physics", "Chemistry"],
+        "Chemistry": ["Organic", "Inorganic", "Physical"],
+        "Physics": ["Statics", "Dynamics"],
+        // Add more tags and their hierarchy as needed
+    };
+
+    function search() {
+        const searchInput = document.getElementById('searchInput').value.trim();
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = ""; // Clear previous results
+
+        // Check if the search input is a valid tag
+        if (tagsData.hasOwnProperty(searchInput)) {
+            // Fetch blogs for the searched tag and its child tags
+            const blogs = getBlogsForTagAndChildren(searchInput);
+            // Display the results
+            displayResults(blogs);
+        } else {
+            resultDiv.innerHTML = "<p>No results found.</p>";
+        }
+    }
+
+    function getBlogsForTagAndChildren(tag) {
+        let blogs = [];
+        if (tagsData.hasOwnProperty(tag)) {
+            // Include blogs for the current tag
+            blogs = blogs.concat(getBlogsForTag(tag));
+
+            // Include blogs for child tags recursively
+            for (const childTag of tagsData[tag]) {
+                blogs = blogs.concat(getBlogsForTagAndChildren(childTag));
+            }
+        }
+        return blogs;
+    }
+
+    // Dummy function to simulate fetching blogs for a tag from the backend
+    function getBlogsForTag(tag) {
+        // Replace this with actual backend API call to fetch blogs
+        // For now, return a dummy array of blogs
+        return ["Blog 1 for " + tag, "Blog 2 for " + tag, "Blog 3 for " + tag];
+    }
+
+    function displayResults(blogs) {
+        const resultDiv = document.getElementById('result');
+        if (blogs.length > 0) {
+            const ul = document.createElement('ul');
+            for (const blog of blogs) {
+                const li = document.createElement('li');
+                li.textContent = blog;
+                ul.appendChild(li);
+            }
+            resultDiv.appendChild(ul);
+        } else {
+            resultDiv.innerHTML = "<p>No blogs found for the selected tag.</p>";
+        }
+    }
+</script>
+
+</body>
+</html>
