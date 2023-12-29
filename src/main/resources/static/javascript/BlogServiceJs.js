@@ -73,24 +73,16 @@
 
 
         function fetchBlogs() {
-
-            var search=document.getElementById("searchInput").value;
-
-            console.log(search);
-           
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://localhost:8080/tag_name=' + search  , true);
- 
-            xhr.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200)
-            {
-                const data = JSON.parse(xhr.responseText);
-                displayBlogs(data);
-            }};
-
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send();
+     
+                var xhr = new XMLHttpRequest();
+                var search=document.getElementById("searchInput").value;// Replace with the actual value you want to pass
+                xhr.open('GET', 'http://localhost:8080/byTag?tag_name=' + search, true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+                xhr.send();
         }
 
 
