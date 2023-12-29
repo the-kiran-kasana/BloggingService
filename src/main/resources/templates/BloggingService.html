@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="/javascript/BlogServiceJs.js"></script>
     <title>Blogging Service</title>
+    <style>
+       h1{
+        align-items: center;
+        display: flex;
+        flex-direction: column
+       }
+       #searchInput{
+        align-items: center;
+        flex-direction: column;
+        height: 30px;
+        z-index: 3;
+        position: relative;
+        background: #f5f5f6;
+        border: 1px solid #4f5052;
+        box-shadow: none;
+        /* border-radius: 24px; */
+        margin-left: 300px;
+        width: 600px;
+        max-width: 500px;
+      }
+      button{
+        height: 34px;
+        width: 50px;
+        align-items: center;
+        margin: 0 auto;
+        border: none;
+      }
+
+    </style>
 </head>
 <body>
     
+<h1>Blog Service</h1>
+<input type="text" id="searchInput" placeholder="Search for a tag ..." >
+<button onclick="fetchBlogs()">Search</button>
+<div id="blogContainer"></div>
 </body>
 </html>
