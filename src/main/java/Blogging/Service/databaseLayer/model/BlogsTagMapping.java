@@ -1,4 +1,4 @@
-package Blogging.Service.Model;
+package Blogging.Service.databaseLayer.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="blog_tag_mapping")
-public class BlogTagMapping {
+public class BlogsTagMapping {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +23,12 @@ public class BlogTagMapping {
      private int tag_id;
 
 
-     public BlogTagMapping()
+     public BlogsTagMapping()
      {
 
      }
 
-     public BlogTagMapping(int blog_tag_id,int blog_id,int tag_id)
+     public BlogsTagMapping(int blog_tag_id,int blog_id,int tag_id)
      {
         this.blog_tag_id=blog_tag_id;
         this.blog_id=blog_id;

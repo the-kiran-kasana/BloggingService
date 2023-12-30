@@ -1,4 +1,4 @@
-package Blogging.Service.Model;
+package Blogging.Service.databaseLayer.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="tag_table")
-public class TagTable {
+public class TagsDetails {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +22,12 @@ public class TagTable {
     @Column(name="parent_tag_id" , nullable = true)
     private int parent_tag_id;
 
-    public TagTable()
+    public TagsDetails()
     {
 
     }
 
-    public TagTable(int tag_id,String tag_name,int parent_tag_id)
+    public TagsDetails(int tag_id,String tag_name,int parent_tag_id)
     {
         this.tag_id=tag_id;
         this.tag_name=tag_name;
@@ -74,5 +74,4 @@ public class TagTable {
                 ",parent_tag_id" + parent_tag_id +
                 "}";
     }
-
 }

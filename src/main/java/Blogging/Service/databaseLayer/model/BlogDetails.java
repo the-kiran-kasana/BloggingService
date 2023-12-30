@@ -1,4 +1,4 @@
-package Blogging.Service.Model;
+package Blogging.Service.databaseLayer.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="blog_table")
-public class BlogTable {
+public class BlogDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +22,12 @@ public class BlogTable {
     @Column(name="body" , nullable = false)
     private String body;
 
-    public BlogTable()
+    public BlogDetails()
     {
 
     }
     
-    public BlogTable(int blog_id,String title,String body)
+    public BlogDetails(int blog_id,String title,String body)
     {
         this.blog_id=blog_id;
         this.title=title;
