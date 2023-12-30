@@ -6,7 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="blog_table")
 public class BlogDetails {
@@ -21,58 +27,4 @@ public class BlogDetails {
 
     @Column(name="body" , nullable = false)
     private String body;
-
-    public BlogDetails()
-    {
-
-    }
-    
-    public BlogDetails(int blog_id,String title,String body)
-    {
-        this.blog_id=blog_id;
-        this.title=title;
-        this.body=body;
-    }
-
-    public int getblog_id()
-    {
-        return blog_id;
-    }
-
-    public void setblog_id(int blog_id)
-    {
-        this.blog_id=blog_id;
-    }
-
-    public String gettitle()
-    {
-        return title;
-    }
-
-    public void settitle(String title)
-    {
-        this.title=title;
-    }
-
-
-    public String getbody()
-    {
-        return body;
-    }
-
-    public void setbody(String body)
-    {
-        this.body=body;
-    }
-
-    @Override
-    public String toString() {
-        return "{"
-                + "blog_id " + blog_id +
-                "title " + title +
-                ",body" + body +
-                "}";
-    }
-
-
 }
