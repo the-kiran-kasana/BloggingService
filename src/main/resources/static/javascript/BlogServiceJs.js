@@ -75,7 +75,7 @@
         function fetchBlogs() {
      
                 var xhr = new XMLHttpRequest();
-                var search=document.getElementById("searchInput").value;// Replace with the actual value you want to pass
+                var search=document.getElementById("searchInput").value;
                 xhr.open('GET', 'http://localhost:8080/byTag?tag_name=' + search, true);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState == 4 && xhr.status == 200) {

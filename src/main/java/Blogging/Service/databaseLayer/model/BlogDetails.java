@@ -27,4 +27,7 @@ public class BlogDetails {
 
     @Column(name="body" , nullable = false)
     private String body;
+
+    public void setblog_id(int int1) {
+    }
 }
