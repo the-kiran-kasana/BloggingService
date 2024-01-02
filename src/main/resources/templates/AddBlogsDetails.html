@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="/javascript/BlogServiceJs.js"></script>
+    <title>Document</title>
+ 
+</head>
+<body>
+   <form style="background-color: #fff;padding: 20px;border-radius: 5px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);width: 300px; margin-top: 100px;margin-left: 420px;" id="blogdetails">
+    <h3 style="text-align: center;color:rgb(141, 144, 215);">Make New Blogs</h3>
+    <label for="title">Title:</label>
+    <input style="width: 100%;margin-bottom: 5px;padding: 5px;box-sizing: border-box;" type="text" id="Title" placeholder="enter the your blog title..." required>
+
+    <label for="body">Body:</label>
+    <input style="width: 100%;margin-bottom: 5px;padding: 5px;box-sizing: border-box;" type="text" id="bodyofblog" placeholder="enter the details about your blog..." required>
+    
+    <label for="body">Tag:</label>
+    <input style="width: 100%;margin-bottom: 5px;padding: 5px;box-sizing: border-box;" type="text" id="tag" placeholder="enter the name of tag..." required>
+
+    <label for="body">Parent Tag:</label>
+    <input style="width: 100%;margin-bottom: 5px;padding: 5px;box-sizing: border-box;" type="text" id="parenttag" placeholder="enter the name of parent tag ..." required>
+    <label style="font-size: x-small;display: inline;"id="parent">   if there is no Parent Tag then enter here   "Null".</label>
+    <button style="background-color: rgb(173, 174, 208);display: inline;margin-left: 80px; border: none;color: rgb(247, 246, 246);height: 25px; width: 120px;margin-top: 20px;" type="button" onclick="SubmitbBlogsDetails()">Add</button>
+   </form>
+</body>
+</html>

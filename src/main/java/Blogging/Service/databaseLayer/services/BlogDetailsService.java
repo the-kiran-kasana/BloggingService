@@ -11,15 +11,19 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import Blogging.Service.databaseLayer.model.BlogDetails;
+import Blogging.Service.databaseLayer.model.TagsDetails;
 import Blogging.Service.databaseLayer.repositories.BlogDetailsRepo;
+import Blogging.Service.databaseLayer.repositories.TagDetailsRepo;
 
 
 @Service
 public class BlogDetailsService {
+
     private final BlogDetailsRepo blogDetailsRepo;
     private JdbcTemplate jdbcTemplate;
 
-   
+    @Autowired
+    private TagDetailsRepo tagDetailsRepo;
 
 
     @Autowired
@@ -28,8 +32,8 @@ public class BlogDetailsService {
     }
 
     @Autowired
-    public void BlogDetailsService(JdbcTemplate jdbcTemplat) {
-        this.jdbcTemplate = jdbcTemplat;
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     /**
@@ -65,6 +69,17 @@ public class BlogDetailsService {
         blogDetailsRepo.deleteById(id);
     }
 
+
+
+    /** 
+     * insert the details in tag table
+     */
+    public void saveTagDetails(TagsDetails tagDetails) {
+      tagDetailsRepo.save(tagDetails);
+    }
+
+
+
     /**
      * Get blogs by tag name.
      * 
@@ -75,15 +90,12 @@ public class BlogDetailsService {
     public List<BlogDetails> getBlogsByTagName(String tag_name) {
 
         Set<Integer> hashSet = new HashSet<>();
+        List<Integer> value = new ArrayList<>();
     
-
         String id = "SELECT tag_id FROM tag_table WHERE tag_name = ?";
         Integer tag_id = jdbcTemplate.queryForObject(id, Integer.class, tag_name);
 
-        System.out.println("check the tag_id   " + tag_id);
         hashSet.add(tag_id);
-
-        List<Integer> value = new ArrayList<>();
         value.add(tag_id);
 
         do {
@@ -92,26 +104,13 @@ public class BlogDetailsService {
             value = childIds;
         } while (!value.isEmpty());
 
-        System.out.println("show all details that present in hashset " + hashSet);
-
-
-
-
 
         String blogIdFromMap = "SELECT blog_id FROM blog_tag_mapping WHERE tag_id IN (" +hashSet.stream().map(Object::toString).collect(Collectors.joining(",")) +")";
         List<Integer> blogIds = jdbcTemplate.queryForList(blogIdFromMap, Integer.class);
-        System.out.println("show all blog_ids that present in hashset " + blogIds);
-
-
 
         String blogtabledetails = "SELECT * FROM blog_table WHERE blog_id IN (" +blogIds.stream().map(Object::toString).collect(Collectors.joining(",")) +")";
         List<BlogDetails> blogDetailsList = jdbcTemplate.query(blogtabledetails, new BeanPropertyRowMapper<>(BlogDetails.class));
-        System.out.println("show all blog table details that according to id blogIds " + blogDetailsList);
-
-
-
-
-
+        
         return blogDetailsList;
 
     }

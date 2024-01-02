@@ -11,4 +11,9 @@ public class controller {
     {
         return "BloggingService";
     } 
+    @GetMapping("/add_API")
+    String AddBlogpage()
+    {
+        return "AddBlogsDetails";
+    } 
 }
