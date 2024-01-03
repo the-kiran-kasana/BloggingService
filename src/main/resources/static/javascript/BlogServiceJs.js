@@ -1,13 +1,10 @@
 /**
  * Fetch the all childs of blog
  */
-
-
-
-    function fetchBlogs() {
+function fetchBlogs() {
         var xhr = new XMLHttpRequest();
         var search = document.getElementById("searchInput").value;
-        xhr.open('GET', 'http://localhost:8080/byTag?tag_name=' + search, true);
+        xhr.open('GET', 'http://localhost:8080/blogs/tag?tag_name=' + search, true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 console.log(xhr.responseText);
@@ -23,7 +20,7 @@
             }
         };
         xhr.send();
-    }
+}
 
     function getDetails(title, body) {
         return "<div style=\"height:120px;border: 2px aliceblue solid;\">" +
@@ -49,10 +46,10 @@
     {
       var title=document.getElementById("Title").value;
       var body=document.getElementById("bodyofblog").value;
-      var tag=document.getElementById("tag").value;
+      var tag_name=document.getElementById("tag").value;
       var parent=document.getElementById("parenttag").value;
 
-      if(title==="" || body==="" || tag==="")
+      if(title==="" || body==="" || tag_name==="")
       {
         alert("please fill the details");
       }else
@@ -89,4 +86,8 @@
       tagbody = JSON.stringify(tags);
       xhhr.send(tagbody);
     }
+
+
+
+
 }
