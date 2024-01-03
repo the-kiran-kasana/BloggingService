@@ -1,6 +1,7 @@
 /**
  * Fetch the all childs of blog
- */function fetchBlogs() {
+ */
+function fetchBlogs() {
     document.getElementById("blogdetails").innerHTML = "";
 
     var search = document.getElementById("searchInput").value;
