@@ -1,33 +1,59 @@
 /**
  * Fetch the all childs of blog
- */
-function fetchBlogs() {
-        var xhr = new XMLHttpRequest();
-        var search = document.getElementById("searchInput").value;
-        xhr.open('GET', 'http://localhost:8080/blogs/tag?tag_name=' + search, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                console.log(xhr.responseText);
-                const data = JSON.parse(xhr.responseText);
-                if (data) {
-                    var blogslist = "";
-                    for (let i in data) {
-                        blogslist += getDetails(data[i].title, data[i].body);
-                    
+ */function fetchBlogs() {
+    document.getElementById("blogdetails").innerHTML = "";
+
+    var search = document.getElementById("searchInput").value;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:8080/blogs/tag?tag_name=' + encodeURIComponent(search), true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                try {
+                    const data = JSON.parse(xhr.responseText);
+                    if (data && data.length > 0) {
+                        displayBlogs(data);
+                    } else {
+                        document.getElementById("blogdetails").innerHTML = "<p>No blogs found.</p>";
                     }
-                    document.getElementById("blogdetails").innerHTML = blogslist;
+                } catch (error) {
+                    console.error("Error parsing JSON: ", error);
                 }
+            } else {
+                console.error("Error fetching blogs. Status code: ", xhr.status);
             }
-        };
-        xhr.send();
+        }
+    };
+
+    xhr.send();
 }
 
-    function getDetails(title, body) {
-        return "<div style=\"height:120px;border: 2px aliceblue solid;\">" +
-            "<h3 style=\"color:blue;\">Title : " + title + "</h3>" +
-            "<h4>Body : " + body + "</h4>" +
-            "</div>";
+function displayBlogs(data) {
+    var blogslist = "";
+    for (let i = 0; i < data.length; i++) {
+        blogslist += getDetails(data[i].title, data[i].body, data[i].blogTags);
     }
+    document.getElementById("blogdetails").innerHTML = blogslist;
+}
+
+function getDetails(title, body, tagsList) {
+    return `<div class="blog-card">
+                <h1 class="blog-title">${title}</h1>
+                <p class="blog-body">${body}</p>
+                <div class="blog-tags">${getTagsCode(tagsList)}</div>
+            </div>
+            `;
+}
+
+function getTagsCode(tagsList) {
+    tags = "";
+    tagsList.forEach(tag => {
+        tags += `<div class="tag">${tag.tag_name}</div>`;
+    });
+    
+    return tags;
+}
 
 
 

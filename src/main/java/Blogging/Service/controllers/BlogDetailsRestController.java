@@ -1,13 +1,14 @@
 package Blogging.Service.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import Blogging.Service.Models.BlogDetailsResponse;
 import Blogging.Service.businessLogic.BlogDetailsBusinessLogic;
 import Blogging.Service.databaseLayer.model.BlogDetails;
 import Blogging.Service.databaseLayer.model.TagsDetails;
@@ -23,10 +24,28 @@ public class BlogDetailsRestController {
         return blogDetailsBusinessLogic.getBlogDetailsById(blogId);
     }
 
+    @GetMapping("/blog/{id}/tags")
+    public List<TagsDetails> getTagsByBlogId(@PathVariable("id") int blogId) {
+        return blogDetailsBusinessLogic.getTagsByBlogId(blogId);
+    }
+
     @GetMapping("/blogs/tag")
-    public List<BlogDetails> getBlogsByTag(@RequestParam String tag_name) {
+    public List<BlogDetailsResponse> getBlogsByTag(@RequestParam String tag_name) {
         List<BlogDetails> blogs = blogDetailsBusinessLogic.getBlogsByTagName(tag_name);
-        return blogs;
+        final List<BlogDetailsResponse> blogDetailsFinalResponse = new ArrayList<>();
+        blogs.forEach(blog -> {
+            System.out.println(blog);
+            final List<TagsDetails> blogTagsDetails = blogDetailsBusinessLogic.getTagsByBlogId(blog.getBlog_id());
+            final BlogDetailsResponse blogDetailsResponse = 
+                    BlogDetailsResponse.builder()
+                    .blog_id(blog.getBlog_id())
+                    .title(blog.getTitle())
+                    .body(blog.getBody())
+                    .blogTags(blogTagsDetails)
+                    .build();
+            blogDetailsFinalResponse.add(blogDetailsResponse);
+        });
+        return blogDetailsFinalResponse;
     }
 
     /*
