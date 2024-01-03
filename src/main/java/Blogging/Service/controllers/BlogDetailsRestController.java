@@ -1,6 +1,7 @@
 package Blogging.Service.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,8 @@ public class BlogDetailsRestController {
 
     @GetMapping("/blogs/tag")
     public List<BlogDetailsResponse> getBlogsByTag(@RequestParam String tag_name) {
-        List<BlogDetails> blogs = blogDetailsBusinessLogic.getBlogsByTagName(tag_name);
+        List<String> tagNames  = Arrays.asList(tag_name.split(","));
+        List<BlogDetails> blogs = blogDetailsBusinessLogic.getBlogsByTagNames(tagNames);
         final List<BlogDetailsResponse> blogDetailsFinalResponse = new ArrayList<>();
         blogs.forEach(blog -> {
             System.out.println(blog);

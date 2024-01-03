@@ -28,7 +28,7 @@
             margin: 0 auto;
             padding: 20px;
             box-sizing: border-box;
-            text-align: center; /* Center text within the container */
+            /* text-align: center; Center text within the container */
         }
 
         h1 {
@@ -136,6 +136,7 @@
     <div class="container">
         <h1>Blogging Service</h1>
         <div class="search-container">
+          <p style="font-size: 10px; text-align: left;">Note: You can also search blogs by providing comma (,) seperated multiple tag names.</p>
           <input type="text" id="searchInput" placeholder="Search for a tag ..." oninput="enableSearchButton()">
           <button id="searchButton" onclick="fetchBlogs()" disabled>Search</button>
         </div>

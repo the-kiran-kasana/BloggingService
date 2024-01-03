@@ -84,17 +84,29 @@ public class BlogDetailsBusinessLogic {
      * @param tag_name
      * @return
      */
-    public List<BlogDetails> getBlogsByTagName(String tag_name) {
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : got request to fetch blogs for tag name [" + tag_name + "].");
+    public List<BlogDetails> getBlogsByTagNames(List<String> tag_names) {
+        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : got request to fetch blogs for tag names [" + tag_names + "].");
 
         Set<Integer> finalTagIds = new HashSet<>();
         List<Integer> currentTagIds = new ArrayList<>();
-    
-        String id = "SELECT tag_id FROM tag_table WHERE tag_name = ?";
-        Integer originalTagId = jdbcTemplate.queryForObject(id, Integer.class, tag_name);
 
-        finalTagIds.add(originalTagId);
-        currentTagIds.add(originalTagId);
+        /*
+         * Here fetching all the tagId for provided comma seperated tags.
+         */
+        final List<Integer> tagIdsForTagNames = new ArrayList<>();
+        String query = "SELECT tag_id FROM tag_table WHERE tag_name = ?";
+        tag_names.forEach(tagName -> {
+            System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Fetching tagId for tagName [" + tagName + "].");
+            List<Integer> tagIds = jdbcTemplate.queryForList(query, Integer.class, tagName);
+            if (tagIds != null) {
+                tagIdsForTagNames.addAll(tagIds);
+            }
+        });
+
+        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Initial list of tagIds [" + tagIdsForTagNames + "] for provided comma seperated tagNames [" + tag_names + "].");
+
+        finalTagIds.addAll(tagIdsForTagNames);
+        currentTagIds.addAll(tagIdsForTagNames);
 
         do {
             List<Integer> childIds = getChildIdsForTagIds(currentTagIds);
@@ -116,14 +128,14 @@ public class BlogDetailsBusinessLogic {
             currentTagIds = processedList;
         } while (!currentTagIds.isEmpty());
 
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found total [" + finalTagIds.size() + "] tag id for tag name [" + tag_name + "].");
+        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found total [" + finalTagIds.size() + "] tag id for tag name [" + tag_names + "].");
 
         String blogIdFromMapQuery = "SELECT blog_id FROM blog_tag_mapping WHERE tag_id IN (" + finalTagIds.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
         List<Integer> blogIds = jdbcTemplate.queryForList(blogIdFromMapQuery, Integer.class);
 
         // Removing duplicate blogIds
         Set<Integer> uniqueBlogIds = Set.copyOf(blogIds);
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found total [" + uniqueBlogIds.size() + "] unique blogs for tag name [" + tag_name + "].");
+        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found total [" + uniqueBlogIds.size() + "] unique blogs for tag name [" + tag_names + "].");
         String blogtabledetails = "SELECT * FROM blog_table WHERE blog_id IN (" + uniqueBlogIds.stream().map(Object::toString).collect(Collectors.joining(",")) +")";
         List<BlogDetails> blogDetailsList = jdbcTemplate.query(blogtabledetails, (rs, rowNum) -> {
             BlogDetails blogDetails = new BlogDetails();
@@ -132,7 +144,7 @@ public class BlogDetailsBusinessLogic {
             blogDetails.setBody(rs.getString("body"));
             return blogDetails;
         });
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Successfully returning total [" + blogDetailsList.size() + "] unique blogs for tag name [" + tag_name + "].");
+        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Successfully returning total [" + blogDetailsList.size() + "] unique blogs for tag name [" + tag_names + "].");
         return blogDetailsList;
 
     }
