@@ -43,28 +43,33 @@ function getDetails(title, body, tagsList) {
                 <h1 class="blog-title">${title}</h1>
                 <p class="blog-body">${body}</p>
                 <div class="blog-tags">${getTagsCode(tagsList)}</div>
-            </div>
-            `;
+            </div>`;
 }
 
 function getTagsCode(tagsList) {
     tags = "";
     tagsList.forEach(tag => {
         tags += `<div class="tag">${tag.tag_name}</div>`;
-    });
-    
+    })
     return tags;
 }
 
 
 
-    function AddBlogs()
-    {
-        location.replace("http://localhost:8080/add_API");  
-    }
-      
-    
 
+
+
+
+
+
+
+
+
+
+    // function AddBlogs()
+    // {
+    //     location.replace("http://localhost:8080/add_API");  
+    // }
 
     /**
      * add new blogs from UI

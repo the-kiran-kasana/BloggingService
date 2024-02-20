@@ -25,10 +25,7 @@ public class BlogDetailsBusinessLogic {
     private final TagDetailsRepo tagDetailsRepo;
 
     @Autowired
-    public BlogDetailsBusinessLogic(
-        @NonNull BlogDetailsRepo blogDetailsRepo, 
-        @NonNull JdbcTemplate jdbcTemplate, 
-        @NonNull TagDetailsRepo tagDetailsRepo) {
+    public BlogDetailsBusinessLogic(@NonNull BlogDetailsRepo blogDetailsRepo,  @NonNull JdbcTemplate jdbcTemplate,  @NonNull TagDetailsRepo tagDetailsRepo) {
             this.blogDetailsRepo = blogDetailsRepo;
             this.jdbcTemplate = jdbcTemplate;
             this.tagDetailsRepo = tagDetailsRepo;
@@ -51,10 +48,7 @@ public class BlogDetailsBusinessLogic {
      * @return
      */
     public BlogDetails getBlogDetailsById(int id) {
-        System.out.println("log:[BlogDetailsService:getBlogDetailsById] : got request to get blog by id [" + id + "].");
         final BlogDetails blogDetails = blogDetailsRepo.findById(id).orElse(null);
-        System.out.println("log:[BlogDetailsService:getBlogDetailsById] : Blog details for blogId [" + id
-                + "], Details : " + blogDetails);
         return blogDetails;
     }
 
@@ -73,10 +67,12 @@ public class BlogDetailsBusinessLogic {
      * insert the details in tag table
      */
     public void saveTagDetails(TagsDetails tagDetails) {
-        System.out.println("log:[BlogDetailsService:saveTagDetails] : got request to save tag [" + tagDetails + "].");
         tagDetailsRepo.save(tagDetails);
-        System.out.println("log:[BlogDetailsService:saveTagDetails] : Sucessfully saved tag details.");
     }
+
+
+
+
 
     /**
      * This is for fetching the blog details from database by the tagName .
@@ -84,8 +80,8 @@ public class BlogDetailsBusinessLogic {
      * @param tag_name
      * @return
      */
-    public List<BlogDetails> getBlogsByTagNames(List<String> tag_names) {
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : got request to fetch blogs for tag names [" + tag_names + "].");
+    public List<BlogDetails> getBlogsByTagNames(List<String> tag_names) 
+    {
 
         Set<Integer> finalTagIds = new HashSet<>();
         List<Integer> currentTagIds = new ArrayList<>();
@@ -96,21 +92,19 @@ public class BlogDetailsBusinessLogic {
         final List<Integer> tagIdsForTagNames = new ArrayList<>();
         String query = "SELECT tag_id FROM tag_table WHERE tag_name = ?";
         tag_names.forEach(tagName -> {
-            System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Fetching tagId for tagName [" + tagName + "].");
             List<Integer> tagIds = jdbcTemplate.queryForList(query, Integer.class, tagName);
             if (tagIds != null) {
                 tagIdsForTagNames.addAll(tagIds);
             }
         });
 
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Initial list of tagIds [" + tagIdsForTagNames + "] for provided comma seperated tagNames [" + tag_names + "].");
-
         finalTagIds.addAll(tagIdsForTagNames);
         currentTagIds.addAll(tagIdsForTagNames);
 
+
+
         do {
             List<Integer> childIds = getChildIdsForTagIds(currentTagIds);
-            System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found child tags [" + childIds + "] for parent tags ["+ currentTagIds +"]");
             List<Integer> processedList = new ArrayList<>();
 
             childIds.forEach(ctag ->{
@@ -128,15 +122,17 @@ public class BlogDetailsBusinessLogic {
             currentTagIds = processedList;
         } while (!currentTagIds.isEmpty());
 
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found total [" + finalTagIds.size() + "] tag id for tag name [" + tag_names + "].");
+
+
 
         String blogIdFromMapQuery = "SELECT blog_id FROM blog_tag_mapping WHERE tag_id IN (" + finalTagIds.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
         List<Integer> blogIds = jdbcTemplate.queryForList(blogIdFromMapQuery, Integer.class);
 
         // Removing duplicate blogIds
         Set<Integer> uniqueBlogIds = Set.copyOf(blogIds);
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found total [" + uniqueBlogIds.size() + "] unique blogs for tag name [" + tag_names + "].");
+       
         String blogtabledetails = "SELECT * FROM blog_table WHERE blog_id IN (" + uniqueBlogIds.stream().map(Object::toString).collect(Collectors.joining(",")) +")";
+   
         List<BlogDetails> blogDetailsList = jdbcTemplate.query(blogtabledetails, (rs, rowNum) -> {
             BlogDetails blogDetails = new BlogDetails();
             blogDetails.setBlog_id(rs.getInt("blog_id"));
@@ -144,10 +140,15 @@ public class BlogDetailsBusinessLogic {
             blogDetails.setBody(rs.getString("body"));
             return blogDetails;
         });
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Successfully returning total [" + blogDetailsList.size() + "] unique blogs for tag name [" + tag_names + "].");
-        return blogDetailsList;
+         return blogDetailsList;
 
     }
+
+
+
+
+
+
 
     private List<Integer> getChildIdsForTagIds(List<Integer> tagIds) {
 
@@ -159,9 +160,11 @@ public class BlogDetailsBusinessLogic {
         String childTagIdsQuery = "SELECT tag_id FROM tag_table WHERE parent_tag_id IN " + placeholders.toString();
         List<Integer>printallid=jdbcTemplate.queryForList(childTagIdsQuery, Integer.class, tagIds.toArray());
 
-        System.out.println("log:[BlogDetailsService:getBlogsByTagName] : Found child [" + printallid.size() + "] tags for tagIds [" + tagIds + "].");
-        return printallid;
+         return printallid;
     }
+
+
+
 
     /**
      * This function is for returning all the tags for a blog.
@@ -170,12 +173,9 @@ public class BlogDetailsBusinessLogic {
      * @return
      */
     public List<TagsDetails> getTagsByBlogId(final Integer blogId) {
-        System.out.println("log:[BlogDetailsService:getTagsByBlogId] : Got blogId [" +blogId + "] in request to get all of its tag details.");
         final Set<Integer> listOfTagIdsForBlog = getAllTagIdsForBlog(blogId);
-        System.out.println("log:[BlogDetailsService:getTagsByBlogId] : Found total [" + listOfTagIdsForBlog.size() + "] tag ids for blogId [" +blogId + "].");
         String tagsDetailsQuery = "SELECT * FROM tag_table WHERE tag_id IN (" + listOfTagIdsForBlog.stream().map(Object::toString).collect(Collectors.joining(",")) +")";
         final List<TagsDetails> tagDetails = jdbcTemplate.query(tagsDetailsQuery, new BeanPropertyRowMapper<>(TagsDetails.class));    
-         System.out.println("log:[BlogDetailsService:getTagsByBlogId] : Returning total [" + tagDetails.size() + "] tag ids for blogId [" + blogId + "]. Tag details : " + tagDetails);
         return tagDetails;
     }
 

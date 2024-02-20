@@ -20,20 +20,13 @@ public class BlogDetailsRestController {
     @Autowired
     private BlogDetailsBusinessLogic blogDetailsBusinessLogic;
 
-    @GetMapping("/blog/{id}")
-    public BlogDetails getBlogById(@PathVariable("id") int blogId) {
-        return blogDetailsBusinessLogic.getBlogDetailsById(blogId);
-    }
-
-    @GetMapping("/blog/{id}/tags")
-    public List<TagsDetails> getTagsByBlogId(@PathVariable("id") int blogId) {
-        return blogDetailsBusinessLogic.getTagsByBlogId(blogId);
-    }
+    
 
     @GetMapping("/blogs/tag")
     public List<BlogDetailsResponse> getBlogsByTag(@RequestParam String tag_name) {
         List<String> tagNames  = Arrays.asList(tag_name.split(","));
         List<BlogDetails> blogs = blogDetailsBusinessLogic.getBlogsByTagNames(tagNames);
+        System.out.println(blogs);
         final List<BlogDetailsResponse> blogDetailsFinalResponse = new ArrayList<>();
         blogs.forEach(blog -> {
             System.out.println(blog);
@@ -49,21 +42,6 @@ public class BlogDetailsRestController {
         });
         return blogDetailsFinalResponse;
     }
-
-    /*
-    @PostMapping("/add_blogs_details")
-    public String addBlogDetails(@RequestBody BlogDetails blogDetails) {
-        blogDetailsBusinessLogic.saveBlogDetails(blogDetails);
-        return "Blog details added successfully";
-    }
-
-    @PostMapping("/add_tags_details")
-    public String addtagsDetails(@RequestBody TagsDetails tagDetails) {
-        System.out.println("all tag table details       " + tagDetails);
-        blogDetailsBusinessLogic.saveTagDetails(tagDetails);
-        return "tags details added successfully";
-    }
-    */
 
 
 
