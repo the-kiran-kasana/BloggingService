@@ -60,17 +60,6 @@ function getTagsCode(tagsList) {
 
 
 
-
-
-
-
-
-
-    // function AddBlogs()
-    // {
-    //     location.replace("http://localhost:8080/add_API");  
-    // }
-
     /**
      * add new blogs from UI
      */
